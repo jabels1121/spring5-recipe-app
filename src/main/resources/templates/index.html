@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Recipe page</title>
+    <!-- Add support for bootstrap css styles -->
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
 <h2>The start page will be ready soon.</h2>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th style="width: 150px;">ID</th>
+        <th style="width: 150px;">First Name</th>
+        <th style="width: 150px;">Last Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="recipe : ${recipes}">
+        <td th:text="${recipe.id}"></td>
+        <td th:text="${recipe.description}"></td>
+        <td th:text="${recipe.prepTime}"></td>
+        <td th:text="${recipe.cookTime}"></td>
+        <td th:text="${recipe.difficulty}"></td>
+        <td th:text="${recipe.notes.recipeNotes}"></td>
+        <td><p th:each="category : ${recipe.categories}" th:text="${category.description}"></p></td>
+        <td><p th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></p></td>
+    </tr>
+    </tbody>
+</table>
+
 </body>
 </html>
