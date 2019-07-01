@@ -1,56 +1,25 @@
 package guru.springframework.services;
 
 import guru.springframework.domain.Category;
-import guru.springframework.repositories.CategoryRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
-@Service
-public class CategoryService {
+public interface CategoryService {
+    Set<Category> getCategories();
 
-    private final CategoryRepository categoryRepository;
+    Category findByDescription(String description) throws NoSuchElementException;
 
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    Category findById(Long id) throws NoSuchElementException;
 
-    public Set<Category> getCategories() {
-        Set<Category> categories = new HashSet<>();
-        categoryRepository.findAll().iterator()
-                .forEachRemaining(categories::add);
-        return categories;
-    }
+    Category save(Category category);
 
-    public Category findByDescription(String description) throws NoSuchElementException {
-        Optional<Category> byDescription = categoryRepository.findByDescription(description);
-        return byDescription.orElseThrow();
-    }
+    <T extends Category> List<T> saveAll(Iterable<T> categories);
 
-    public Category findById(Long id) throws NoSuchElementException{
-        Optional<Category> byId = categoryRepository.findById(id);
-        return byId.orElseThrow();
-    }
+    void deleteById(Long id);
 
-    public Category save(Category category) {
-        return categoryRepository.save(category);
-    }
+    void deleteAll();
 
-    public <T extends Category> List<T> saveAll(Iterable<T> categories) {
-        return categoryRepository.saveAll(categories);
-    }
-
-    public void deleteById(Long id) {
-        categoryRepository.deleteById(id);
-    }
-
-    public void deleteAll() {
-        categoryRepository.deleteAll();
-    }
-
-    public void delete(Category category) {
-        categoryRepository.delete(category);
-    }
-
-
+    void delete(Category category);
 }

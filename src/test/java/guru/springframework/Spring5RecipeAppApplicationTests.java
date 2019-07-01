@@ -13,6 +13,4 @@ public class Spring5RecipeAppApplicationTests {
 	public void contextLoads() {
 	}
 
-
-
 }

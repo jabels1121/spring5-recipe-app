@@ -14,28 +14,25 @@
 </head>
 <body>
 <h2>The start page will be ready soon.</h2>
+<div class="container">
 
-<table class="table table-striped">
-    <thead class="thead-dark">
-    <tr>
-        <th style="width: 150px;">ID</th>
-        <th style="width: 150px;">First Name</th>
-        <th style="width: 150px;">Last Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="recipe : ${recipes}">
-        <td th:text="${recipe.id}"></td>
-        <td th:text="${recipe.description}"></td>
-        <td th:text="${recipe.prepTime}"></td>
-        <td th:text="${recipe.cookTime}"></td>
-        <td th:text="${recipe.difficulty}"></td>
-        <td th:text="${recipe.notes.recipeNotes}"></td>
-        <td><p th:each="category : ${recipe.categories}" th:text="${category.description}"></p></td>
-        <td><p th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></p></td>
-    </tr>
-    </tbody>
-</table>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th >ID</th>
+            <th >description</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="recipe : ${recipes}">
+            <td th:text="${recipe.id}"></td>
+            <td th:text="${recipe.description}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>

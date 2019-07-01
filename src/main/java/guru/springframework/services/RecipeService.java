@@ -1,51 +1,23 @@
 package guru.springframework.services;
 
-
 import guru.springframework.domain.Recipe;
-import guru.springframework.repositories.RecipeRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
-@Service
-public class RecipeService {
-    
-    private final RecipeRepository recipeRepository;
+public interface RecipeService {
+    Set<Recipe> getRecipes();
 
-    public RecipeService(RecipeRepository recipeRepository) {
-        this.recipeRepository = recipeRepository;
-    }
+    Recipe getRecipeById(Long id) throws NoSuchElementException;
 
-    public Set<Recipe> getRecipes() {
-        Set<Recipe> recipes = new HashSet<>();
-        recipeRepository.findAll().iterator()
-                .forEachRemaining(recipes::add);
-        return recipes;
-    }
+    Recipe save(Recipe Recipe);
 
-    public Recipe getRecipeById(Long id) throws NoSuchElementException{
-        Optional<Recipe> byId = recipeRepository.findById(id);
-        return byId.orElseThrow();
-    }
+    <T extends Recipe> List<T> saveAll(Iterable<T> categories);
 
-    public Recipe save(Recipe Recipe) {
-        return recipeRepository.save(Recipe);
-    }
+    void deleteById(Long id);
 
-    public <T extends Recipe> List<T> saveAll(Iterable<T> categories) {
-        return recipeRepository.saveAll(categories);
-    }
+    void deleteAll();
 
-    public void deleteById(Long id) {
-        recipeRepository.deleteById(id);
-    }
-
-    public void deleteAll() {
-        recipeRepository.deleteAll();
-    }
-
-    public void delete(Recipe Recipe) {
-        recipeRepository.delete(Recipe);
-    }
-
+    void delete(Recipe Recipe);
 }

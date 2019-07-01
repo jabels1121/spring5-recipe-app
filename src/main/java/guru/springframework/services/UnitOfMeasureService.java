@@ -1,46 +1,22 @@
 package guru.springframework.services;
 
 import guru.springframework.domain.UnitOfMeasure;
-import guru.springframework.repositories.UnitOfMeasureRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-public class UnitOfMeasureService {
+public interface UnitOfMeasureService {
+    List<UnitOfMeasure> findAll();
 
-    private final UnitOfMeasureRepository unitOfMeasureRepository;
+    UnitOfMeasure findById(Long id) throws NoSuchElementException;
 
-    public UnitOfMeasureService(UnitOfMeasureRepository unitOfMeasureRepository) {
-        this.unitOfMeasureRepository = unitOfMeasureRepository;
-    }
+    UnitOfMeasure save(UnitOfMeasure UnitOfMeasure);
 
-    public List<UnitOfMeasure> findAll() {
-        return unitOfMeasureRepository.findAll();
-    }
+    <T extends UnitOfMeasure> List<T> saveAll(Iterable<T> categories);
 
-    public UnitOfMeasure findById(Long id) throws NoSuchElementException {
-        Optional<UnitOfMeasure> byId = unitOfMeasureRepository.findById(id);
-        return byId.orElseThrow();
-    }
+    void deleteById(Long id);
 
-    public UnitOfMeasure save(UnitOfMeasure UnitOfMeasure) {
-        return unitOfMeasureRepository.save(UnitOfMeasure);
-    }
+    void deleteAll();
 
-    public <T extends UnitOfMeasure> List<T> saveAll(Iterable<T> categories) {
-        return unitOfMeasureRepository.saveAll(categories);
-    }
-
-    public void deleteById(Long id) {
-        unitOfMeasureRepository.deleteById(id);
-    }
-
-    public void deleteAll() {
-        unitOfMeasureRepository.deleteAll();
-    }
-
-    public void delete(UnitOfMeasure UnitOfMeasure) {
-        unitOfMeasureRepository.delete(UnitOfMeasure);
-    }
+    void delete(UnitOfMeasure UnitOfMeasure);
 }
