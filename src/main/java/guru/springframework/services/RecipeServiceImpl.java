@@ -28,7 +28,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe getRecipeById(Long id) throws NoSuchElementException {
+    public Recipe getRecipeById(Long id) {
         Optional<Recipe> byId = recipeRepository.findById(id);
         return byId.orElseThrow();
     }
