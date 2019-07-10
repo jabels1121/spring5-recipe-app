@@ -1,30 +1,31 @@
 package guru.springframework.services;
 
-import guru.springframework.domain.Recipe;
+import guru.springframework.entities.Recipe;
 import guru.springframework.repositories.RecipeRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class RecipeServiceImplTest {
-
-    private RecipeServiceImpl recipeServiceImpl;
 
     @Mock
     private RecipeRepository recipeRepository;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @InjectMocks
+    private RecipeServiceImpl recipeServiceImpl;
 
-        recipeServiceImpl = new RecipeServiceImpl(recipeRepository);
-    }
 
     @Test
     public void getRecipesTest() {
@@ -50,7 +51,7 @@ public class RecipeServiceImplTest {
 
         Recipe recipeById = recipeServiceImpl.getRecipeById(1L);
 
-        assertNotNull("Null recipe returned", recipeById);
+        assertNotNull(recipeById, "Null recipe returned");
         assertEquals(recipeById.getId(), recipe.getId());
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, never()).findAll();

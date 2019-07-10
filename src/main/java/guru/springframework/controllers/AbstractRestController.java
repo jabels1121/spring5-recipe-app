@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/rest")
-public class AbstractRestController {
+public abstract class AbstractRestController {
 }

@@ -1,28 +1,31 @@
-package guru.springframework.domain;
+package guru.springframework.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = {"recipes"})
-@ToString(exclude = {"recipes"})
+@EqualsAndHashCode(exclude = {"recipe"})
+@ToString(exclude = {"recipe"})
 @Entity
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Category {
+public class Notes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String description;
 
-    @ManyToMany(mappedBy = "categories")
-    private Set<Recipe> recipes = new HashSet<>();
+    @OneToOne
+    private Recipe recipe;
+
+    @Lob
+    private String recipeNotes;
+
 
 }

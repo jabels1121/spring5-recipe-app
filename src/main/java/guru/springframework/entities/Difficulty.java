@@ -1,4 +1,4 @@
-package guru.springframework.domain;
+package guru.springframework.entities;
 
 public enum  Difficulty {
 

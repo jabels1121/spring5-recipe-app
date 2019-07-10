@@ -1,9 +1,12 @@
-package guru.springframework.domain;
+package guru.springframework.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import guru.springframework.converters.CategorySetToCategoryDescriptionList;
+import guru.springframework.serializers.IngredientSetSerializer;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -33,6 +36,9 @@ public class Recipe {
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
 
+
+    @JsonProperty("ingredients")
+    @JsonSerialize(using = IngredientSetSerializer.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
     private Set<Ingredient> ingredients = new HashSet<>();
 
@@ -42,6 +48,7 @@ public class Recipe {
     @OneToOne(cascade = CascadeType.ALL)
     private Notes notes;
 
+    @JsonSerialize(converter = CategorySetToCategoryDescriptionList.class)
     @ManyToMany
     @JoinTable(name = "recipe_category",
             joinColumns = @JoinColumn(name = "recipe_id"),

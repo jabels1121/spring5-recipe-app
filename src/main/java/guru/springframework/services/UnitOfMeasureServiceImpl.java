@@ -1,12 +1,14 @@
 package guru.springframework.services;
 
-import guru.springframework.domain.UnitOfMeasure;
+import guru.springframework.entities.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Service
 public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
     private final UnitOfMeasureRepository unitOfMeasureRepository;

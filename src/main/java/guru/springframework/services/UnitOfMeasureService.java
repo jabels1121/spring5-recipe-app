@@ -1,6 +1,6 @@
 package guru.springframework.services;
 
-import guru.springframework.domain.UnitOfMeasure;
+import guru.springframework.entities.UnitOfMeasure;
 
 import java.util.List;
 import java.util.NoSuchElementException;

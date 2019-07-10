@@ -1,6 +1,6 @@
 package guru.springframework.services;
 
-import guru.springframework.domain.Category;
+import guru.springframework.entities.Category;
 import guru.springframework.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 

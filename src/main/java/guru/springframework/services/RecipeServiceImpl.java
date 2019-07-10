@@ -1,21 +1,28 @@
 package guru.springframework.services;
 
 
-import guru.springframework.domain.Recipe;
+import guru.springframework.commands.RecipeCommand;
+import guru.springframework.converters.RecipeToRecipeCommand;
+import guru.springframework.entities.Recipe;
 import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.recipeRepository = recipeRepository;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
@@ -26,6 +33,20 @@ public class RecipeServiceImpl implements RecipeService {
                 .forEachRemaining(recipes::add);
         return recipes;
     }
+
+    @Override
+    public Set<RecipeCommand> getRecipeCommands() {
+        Set<RecipeCommand> recipes = new HashSet<>();
+
+        try {
+            recipeRepository.findAll().forEach(e -> recipes.add(recipeToRecipeCommand.convert(e)));
+        } catch (Exception e) {
+            log.error("Cannot convert Set of Recipes to Set of RecipeCommands.", e.getMessage());
+        }
+
+        return recipes;
+    }
+
 
     @Override
     public Recipe getRecipeById(Long id) {
