@@ -36,7 +36,7 @@ public class RecipeRestController extends AbstractRestController {
         return recipeService.getRecipeCommands();
     }
 
-    @GetMapping(path = "/recipxe/{id}")
+    @GetMapping(path = "/recipe/{id}")
     public Recipe getRecipeById(@PathVariable Long id) {
         return recipeService.getRecipeById(id);
     }

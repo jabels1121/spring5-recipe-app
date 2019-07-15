@@ -4,14 +4,20 @@ import guru.springframework.entities.*;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
+import guru.springframework.security.dao.Role;
+import guru.springframework.security.dao.RoleRepository;
+import guru.springframework.security.dao.User;
+import guru.springframework.security.dao.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,18 +27,48 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
-    public RecipeBootstrap(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
+    public RecipeBootstrap(CategoryRepository categoryRepository,
+                           RecipeRepository recipeRepository,
+                           UnitOfMeasureRepository unitOfMeasureRepository,
+                           UserRepository userRepository,
+                           RoleRepository roleRepository,
+                           PasswordEncoder encoder) {
         this.categoryRepository = categoryRepository;
         this.recipeRepository = recipeRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         recipeRepository.saveAll(getRecipes());
+        initUsersAndRoles();
         log.debug("Loading bootstrap data");
+    }
+
+    private void initUsersAndRoles() {
+        Role admin = new Role("ADMIN", "Роль администратора");
+        Role user = new Role("USER", "Роль пользователя");
+        roleRepository.saveAll(Arrays.asList(admin, user));
+
+
+        User superUser = new User("suser", "suser");
+        superUser.addRole(admin).addRole(user);
+
+        User simpleUser = new User("user", "user");
+        simpleUser.addRole(user);
+
+        User adminUser = new User("admin","admin");
+        adminUser.addRole(admin);
+
+        userRepository.saveAll(Arrays.asList(simpleUser, superUser, adminUser));
     }
 
     private List<Recipe> getRecipes() {
