@@ -59,13 +59,13 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         roleRepository.saveAll(Arrays.asList(admin, user));
 
 
-        User superUser = new User("suser", "suser");
+        User superUser = new User("suser", encoder.encode("suser"));
         superUser.addRole(admin).addRole(user);
 
-        User simpleUser = new User("user", "user");
+        User simpleUser = new User("user", encoder.encode("user"));
         simpleUser.addRole(user);
 
-        User adminUser = new User("admin","admin");
+        User adminUser = new User("admin",encoder.encode("admin"));
         adminUser.addRole(admin);
 
         userRepository.saveAll(Arrays.asList(simpleUser, superUser, adminUser));

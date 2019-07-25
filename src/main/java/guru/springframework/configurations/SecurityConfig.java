@@ -20,6 +20,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
+/*
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .inMemoryAuthentication()
+                .withUser("Sergey")
+                .password(passwordEncoder().encode("test"))
+                .roles("ADMIN");
+    }*/
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -31,11 +40,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/rest/uom/**").hasAuthority("USER")
-                .anyRequest().permitAll()
+                .antMatchers("/recipe/**").hasAuthority("ADMIN")
+                .antMatchers("/rest/recipeCommands").hasAuthority("ADMIN")
+                .anyRequest().authenticated()
                 .and()
+                .formLogin().and()
                 .csrf().disable()
-                .headers().frameOptions().disable();
-
+                .headers().frameOptions().disable().and().httpBasic();
+/*http.authorizeRequests().anyRequest()).authenticated().and()).formLogin().and()).httpBasic()*/
     }
 
     @Bean
