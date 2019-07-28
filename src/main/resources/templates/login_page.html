@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login page</title>
+    <link type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="col-md-6">
+
+    <h1>Login page</h1>
+    <div th:if="${param.error}" class="alert alert-danger">Wrong user or password</div>
+    <div th:if="${param.logout}" class="alert alert-danger">U have been logged out</div>
+    <div th:if="${param.user}" class="alert alert-danger"
+         th:text="${param.user} + ' user. Can\'t use logout!'"></div>
+
+        <form th:action="@{/doLogin}" method="post" class="form-horizontal ">
+            <div>
+                <label class="control-label" for="username">Username:
+                    <input type="text" id="username" name="username" autofocus="autofocus"/></label> <br/>
+            </div>
+            <div>
+                <label class="control-label" for="password">Password:
+                    <input type="password" id="password" name="password"/></label> <br/>
+            </div>
+            <div>
+                <input class="btn btn-primary" type="submit" value="Log in"/>
+            </div>
+                <a class="btn btn-secondary" th:href="@{/signUp}">Sign up</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
