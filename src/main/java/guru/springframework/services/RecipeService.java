@@ -23,4 +23,6 @@ public interface RecipeService {
     void deleteAll();
 
     void delete(Recipe Recipe);
+
+    RecipeCommand saveOrUpdate(RecipeCommand recipeCommand);
 }

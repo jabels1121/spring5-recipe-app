@@ -2,16 +2,16 @@ package guru.springframework.services;
 
 
 import guru.springframework.commands.RecipeCommand;
+import guru.springframework.converters.RecipeCommandToRecipe;
 import guru.springframework.converters.RecipeToRecipeCommand;
 import guru.springframework.entities.Recipe;
 import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -19,10 +19,14 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
+    private final RecipeCommandToRecipe recipeCommandToRecipe;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeToRecipeCommand recipeToRecipeCommand) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository,
+                             RecipeToRecipeCommand recipeToRecipeCommand,
+                             RecipeCommandToRecipe recipeCommandToRecipe) {
         this.recipeRepository = recipeRepository;
         this.recipeToRecipeCommand = recipeToRecipeCommand;
+        this.recipeCommandToRecipe = recipeCommandToRecipe;
     }
 
     @Override
@@ -79,4 +83,10 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.delete(Recipe);
     }
 
+    @Override
+    public RecipeCommand saveOrUpdate(RecipeCommand recipeCommand) {
+        Recipe convert = recipeCommandToRecipe.convert(recipeCommand);
+        Recipe save = recipeRepository.save(convert);
+        return recipeToRecipeCommand.convert(save);
+    }
 }
