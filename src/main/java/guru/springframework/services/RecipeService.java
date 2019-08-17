@@ -14,6 +14,8 @@ public interface RecipeService {
 
     Recipe getRecipeById(Long id) throws NoSuchElementException;
 
+    RecipeCommand findCommandById(Long id);
+
     Recipe save(Recipe Recipe);
 
     <T extends Recipe> List<T> saveAll(Iterable<T> categories);

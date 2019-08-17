@@ -21,15 +21,19 @@ public class RecipeController {
     @GetMapping(path = "/{recipeId}/show")
     public String showRecipeById(@PathVariable Long recipeId, Model model) {
         Recipe recipeById = recipeService.getRecipeById(recipeId);
-
         model.addAttribute("recipe", recipeById);
-
         return "recipe/show";
     }
 
     @GetMapping(path = "/new")
     public ModelAndView newRecipe() {
         return new ModelAndView("recipe/recipeform", "recipe", new RecipeCommand());
+    }
+
+    @GetMapping(path = "/{id}/update")
+    public String updateRecipe(@PathVariable String id, Model model) {
+        model.addAttribute("recipe", recipeService.findCommandById(Long.valueOf(id)));
+        return "recipe/recipeform";
     }
 
     @PostMapping(path = "")
