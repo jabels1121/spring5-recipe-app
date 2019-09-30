@@ -2,9 +2,7 @@ package guru.springframework.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
@@ -24,8 +22,6 @@ public class LogoutSuccessHandlerImpl extends
     public void onLogoutSuccess(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
                                 Authentication authentication) throws IOException, ServletException {
-
-
         if (authentication != null) {
             PrincipalImpl build = new PrincipalImpl.PrincipalImplBuilder()
                     .withLogin(authentication.getName())
