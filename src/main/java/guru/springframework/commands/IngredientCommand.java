@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IngredientCommand {
+public class IngredientCommand implements Comparable<IngredientCommand> {
 
     private Long id;
     private Long recipeId;
@@ -20,4 +20,8 @@ public class IngredientCommand {
     private BigDecimal amount;
     private UnitOfMeasureCommand uom;
 
+    @Override
+    public int compareTo(IngredientCommand o) {
+        return (int) (this.getId() - o.getId());
+    }
 }

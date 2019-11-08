@@ -55,10 +55,11 @@ class IngredientServiceImplTest {
 
         Arrays.asList(ingredient, ingredient1, ingredient2).forEach(recipe::addIngredient);
         Optional<Recipe> optionalRecipe = Optional.of(recipe);
-        IngredientToIngredientCommand converter = new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
+        IngredientToIngredientCommand converter =
+                new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
         when(recipeRepository.findById(anyLong())).thenReturn(optionalRecipe);
-        when(ingredientToIngredientCommand.convert(ingredient2)).thenReturn(
-                converter.convert(ingredient2));
+        when(ingredientToIngredientCommand.convert(ingredient2))
+                .thenReturn(converter.convert(ingredient2));
 
         IngredientCommand ingrCmd =
                 ingredientService.findIngrCommandByRecipeIdAndIngredientId(1L, 3L);

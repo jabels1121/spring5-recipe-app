@@ -11,6 +11,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 @Entity
@@ -40,6 +41,7 @@ public class Recipe {
     @JsonProperty("ingredients")
     @JsonSerialize(using = IngredientSetSerializer.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    @OrderColumn(name = "id")
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @Lob

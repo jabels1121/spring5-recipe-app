@@ -1,5 +1,7 @@
 package guru.springframework.services;
 
+import guru.springframework.commands.UnitOfMeasureCommand;
+import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.entities.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.springframework.stereotype.Service;
@@ -7,14 +9,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
     private final UnitOfMeasureRepository unitOfMeasureRepository;
+    private final UnitOfMeasureToUnitOfMeasureCommand converter;
 
-    public UnitOfMeasureServiceImpl(UnitOfMeasureRepository unitOfMeasureRepository) {
+    public UnitOfMeasureServiceImpl(UnitOfMeasureRepository unitOfMeasureRepository,
+                                    UnitOfMeasureToUnitOfMeasureCommand converter) {
         this.unitOfMeasureRepository = unitOfMeasureRepository;
+        this.converter = converter;
     }
 
     @Override
@@ -26,6 +34,12 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
     public UnitOfMeasure findById(Long id) throws NoSuchElementException {
         Optional<UnitOfMeasure> byId = unitOfMeasureRepository.findById(id);
         return byId.orElseThrow();
+    }
+
+    @Override
+    public Set<UnitOfMeasureCommand> listAllUomCommands() {
+        return findAll().stream()
+                .map(converter::convert).collect(Collectors.toSet());
     }
 
     @Override
