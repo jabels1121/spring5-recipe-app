@@ -153,12 +153,16 @@ class IngredientServiceImplTest {
         when(recipeRepository.save(any(Recipe.class))).thenReturn(recipe);
         when(ingredientToIngredientCommand.convert(any())).thenCallRealMethod();
         when(unitOfMeasureRepository.findById(3L)).thenReturn(Optional.of(uom));
+        when(ingredientToIngredientCommand.convert(any())).thenReturn(ingredientCommand);
 
         //when
         var saveIngredientCommand = ingredientService.saveIngredientCommand(ingredientCommand);
 
         // then
         assertNotNull(saveIngredientCommand);
+        Ingredient updatedIngredient = recipe.getIngredients().stream().filter(ingredient1 -> ingredient.getId().equals(1L)).findFirst().get();
+        assertEquals("Blabla", updatedIngredient.getDescription());
+        assertEquals(BigDecimal.valueOf(3.5), updatedIngredient.getAmount());
     }
 
     @Test

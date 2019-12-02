@@ -1,5 +1,6 @@
 package guru.springframework.services;
 
+import guru.springframework.commands.UnitOfMeasureCommand;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.entities.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
@@ -10,10 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -93,9 +91,14 @@ class UnitOfMeasureServiceImplTest {
         UnitOfMeasure uom1 = new UnitOfMeasure();
         uom.setId(id2);
 
-
         when(unitOfMeasureRepository.findAll()).thenReturn(Arrays.asList(uom, uom1));
+        when(unitOfMeasureToUnitOfMeasureCommand.convert(any())).thenCallRealMethod();
 
+        //when
+        var unitOfMeasureCommands = unitOfMeasureService.listAllUomCommands();
+
+        assertNotNull(unitOfMeasureCommands);
+        assertEquals(2, unitOfMeasureCommands.size());
     }
 
     @Test
