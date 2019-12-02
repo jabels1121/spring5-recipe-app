@@ -1,6 +1,8 @@
 package guru.springframework.controllers;
 
 import guru.springframework.commands.IngredientCommand;
+import guru.springframework.commands.UnitOfMeasureCommand;
+import guru.springframework.domain.Recipe;
 import guru.springframework.services.IngredientService;
 import guru.springframework.services.RecipeService;
 import guru.springframework.services.UnitOfMeasureService;
@@ -63,5 +65,44 @@ public class IngredientController {
         log.debug("saved ingredient id:" + savedCommand.getId());
 
         return "redirect:/recipe/" + savedCommand.getRecipeId() + "/ingredient/" + savedCommand.getId() + "/show";
+    }
+
+    @GetMapping(path = "recipe/{recipeId}/ingredient/new")
+    public String newIngredient(@PathVariable Long recipeId,
+                                Model model) {
+
+        // verify on correct recipeId
+        validateRecipeId(recipeId);
+
+        var ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(recipeId);
+        ingredientCommand.setUom(new UnitOfMeasureCommand());
+
+        model.addAttribute("ingredient", ingredientCommand);
+        model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
+
+        return "recipe/ingredient/ingredientform";
+    }
+
+    // delete ingredient
+    @GetMapping(path = "/recipe/{recipeId}/ingredient/{ingredientId}/delete")
+    public String deleteIngredient(@PathVariable final Long recipeId,
+                                   @PathVariable final Long ingredientId,
+                                   Model model) {
+        validateRecipeId(recipeId);
+
+        ingredientService.deleteIngredientFromRecipe(recipeId, ingredientId);
+
+        model.addAttribute("recipe", recipeService.findCommandById(recipeId));
+
+        return "redirect:/recipe/" + recipeId + "/ingredients";
+    }
+
+    private void validateRecipeId(final Long recipeId) {
+        var recipe = recipeService.findById(recipeId);
+        if (null == recipe) {
+            log.warn("Wrong recipe id when create new ingredient!");
+            throw new RuntimeException("Wrong recipe Id!Recipe is null");
+        }
     }
 }

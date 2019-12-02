@@ -2,6 +2,7 @@ package guru.springframework.controllers;
 
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.commands.RecipeCommand;
+import guru.springframework.domain.Recipe;
 import guru.springframework.services.IngredientService;
 import guru.springframework.services.RecipeService;
 import guru.springframework.services.UnitOfMeasureService;
@@ -12,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.HashSet;
 
@@ -110,6 +112,41 @@ public class IngredientControllerTest {
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/2/ingredient/3/show"));
+    }
 
+    @Test
+    public void deleteIngredientFromRecipe() throws Exception {
+        var recipe = new Recipe();
+        recipe.setId(2L);
+
+        when(recipeService.findById(2L)).thenReturn(recipe);
+
+        mockMvc.perform(get("/recipe/2/ingredient/1/delete"))
+                .andExpect(view().name("redirect:/recipe/2/ingredients"));
+        verify(ingredientService, times(1)).deleteIngredientFromRecipe(anyLong(), anyLong());
+    }
+
+    @Test
+    public void testNewIngredient() throws Exception {
+        var recipe = new Recipe();
+        recipe.setId(1L);
+
+        when(recipeService.findById(anyLong())).thenReturn(recipe);
+
+        mockMvc.perform(get("/recipe/1/ingredient/new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/ingredientform"))
+                .andExpect(model().attributeExists("ingredient"))
+                .andExpect(model().attributeExists("uomList"));
+    }
+
+    @Test(expected = NestedServletException.class)
+    public void name() throws Exception {
+        var recipe = new Recipe();
+        recipe.setId(1L);
+
+        when(recipeService.findById(anyLong())).thenReturn(null);
+
+        mockMvc.perform(get("/recipe/1/ingredient/new"));
     }
 }

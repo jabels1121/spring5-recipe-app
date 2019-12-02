@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by jt on 6/28/17.
@@ -39,7 +41,7 @@ public class IngredientServiceImpl implements IngredientService {
 
         Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
 
-        if (!recipeOptional.isPresent()){
+        if (!recipeOptional.isPresent()) {
             //todo impl error handling
             log.error("recipe id not found. Id: " + recipeId);
         }
@@ -48,9 +50,9 @@ public class IngredientServiceImpl implements IngredientService {
 
         Optional<IngredientCommand> ingredientCommandOptional = recipe.getIngredients().stream()
                 .filter(ingredient -> ingredient.getId().equals(ingredientId))
-                .map( ingredient -> ingredientToIngredientCommand.convert(ingredient)).findFirst();
+                .map(ingredient -> ingredientToIngredientCommand.convert(ingredient)).findFirst();
 
-        if(!ingredientCommandOptional.isPresent()){
+        if (!ingredientCommandOptional.isPresent()) {
             //todo impl error handling
             log.error("Ingredient id not found: " + ingredientId);
         }
@@ -63,7 +65,7 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientCommand saveIngredientCommand(IngredientCommand command) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(command.getRecipeId());
 
-        if(!recipeOptional.isPresent()){
+        if (recipeOptional.isEmpty()) {
 
             //todo toss error if not found!
             log.error("Recipe not found for id: " + command.getRecipeId());
@@ -77,7 +79,7 @@ public class IngredientServiceImpl implements IngredientService {
                     .filter(ingredient -> ingredient.getId().equals(command.getId()))
                     .findFirst();
 
-            if(ingredientOptional.isPresent()){
+            if (ingredientOptional.isPresent()) {
                 Ingredient ingredientFound = ingredientOptional.get();
                 ingredientFound.setDescription(command.getDescription());
                 ingredientFound.setAmount(command.getAmount());
@@ -86,17 +88,49 @@ public class IngredientServiceImpl implements IngredientService {
                         .orElseThrow(() -> new RuntimeException("UOM NOT FOUND"))); //todo address this
             } else {
                 //add new Ingredient
-                recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+                var ingredient = ingredientCommandToIngredient.convert(command);
+                Objects.requireNonNull(ingredient).setRecipe(recipe);
+                recipe.addIngredient(ingredient);
             }
 
             Recipe savedRecipe = recipeRepository.save(recipe);
 
-            //to do check for fail
-            return ingredientToIngredientCommand.convert(savedRecipe.getIngredients().stream()
-                    .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
+            return savedRecipe.getIngredients()
+                    .stream()
+                    .filter(ingredient -> ingredient.getDescription().equalsIgnoreCase(command.getDescription()))
+                    .filter(ingredient -> ingredient.getAmount().equals(command.getAmount()))
+                    .filter(ingredient -> ingredient.getUom().getId().equals(command.getUom().getId()))
                     .findFirst()
-                    .get());
+                    .map(ingredientToIngredientCommand::convert)
+                    .orElseThrow(() -> {
+                        log.error("Didn't find new ingredient inside saved recipe!");
+                        return new RuntimeException("Didn't find new ingredient inside saved recipe!");
+                    });
         }
+    }
 
+    @Transactional
+    @Override
+    public void deleteIngredientFromRecipe(final Long recipeId, final Long ingredientId) {
+        var recipeOptional = recipeRepository.findById(recipeId);
+
+        recipeOptional.ifPresentOrElse(recipe -> {
+                    recipe.getIngredients()
+                            .stream()
+                            .filter(ingredient -> ingredient.getId().equals(ingredientId))
+                            .findFirst()
+                            .ifPresentOrElse(ingredient -> {
+                                recipe.getIngredients().remove(ingredient);
+                                ingredient.setRecipe(null);
+                                ingredient.setUom(null);
+                            }, () -> {
+                                log.error("Ingredient not found from recipeId=" + recipeId);
+                                throw new RuntimeException("Ingredient not found from recipeId=" + recipeId);
+                            });
+                    recipeRepository.save(recipe);
+                },
+                () -> {
+                    throw new RuntimeException("Recipe not found!");
+                });
     }
 }
