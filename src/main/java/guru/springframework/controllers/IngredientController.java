@@ -33,12 +33,12 @@ public class IngredientController {
         return "recipe/ingredient/list";
     }
 
-    @GetMapping(path = "/recipe/{recipeId}/ingredient/{id}/show")
+    @GetMapping(path = "/recipe/{recipeId}/ingredient/{ingredientId}/show")
     public String showRecipeIngredient(@PathVariable Long recipeId,
-                                       @PathVariable Long id,
+                                       @PathVariable Long ingredientId,
                                        Model model) {
         IngredientCommand ingrCommandByRecipeIdAndIngredientId
-                = ingredientService.findIngrCommandByRecipeIdAndIngredientId(recipeId, id);
+                = ingredientService.findIngrCommandByRecipeIdAndIngredientId(recipeId, ingredientId);
         model.addAttribute("ingredient", ingrCommandByRecipeIdAndIngredientId);
         return "recipe/ingredient/show";
     }
