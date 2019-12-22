@@ -1,12 +1,14 @@
 package guru.springframework.services;
 
 import guru.springframework.commands.IngredientCommand;
+import guru.springframework.commands.UnitOfMeasureCommand;
 import guru.springframework.converters.IngredientCommandToIngredient;
 import guru.springframework.converters.IngredientToIngredientCommand;
 import guru.springframework.converters.UnitOfMeasureCommandToUnitOfMeasure;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.domain.Ingredient;
 import guru.springframework.domain.Recipe;
+import guru.springframework.domain.UnitOfMeasure;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.junit.Before;
@@ -14,6 +16,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -107,15 +110,30 @@ public class IngredientServiceImplTest {
     @Test
     public void testSaveRecipeCommand() throws Exception {
         //given
+        var uomId = 1L;
+
+        UnitOfMeasure uom = new UnitOfMeasure();
+        uom.setId(uomId);
+
+        UnitOfMeasureCommand uomCom = new UnitOfMeasureCommand();
+        uomCom.setId(uomId);
+
         IngredientCommand command = new IngredientCommand();
         command.setId(3L);
         command.setRecipeId(2L);
+        command.setAmount(BigDecimal.valueOf(1));
+        command.setDescription("null");
+        command.setUom(uomCom);
 
         Optional<Recipe> recipeOptional = Optional.of(new Recipe());
 
         Recipe savedRecipe = new Recipe();
         savedRecipe.addIngredient(new Ingredient());
         savedRecipe.getIngredients().iterator().next().setId(3L);
+        savedRecipe.getIngredients().iterator().next().setAmount(BigDecimal.valueOf(1));
+        savedRecipe.getIngredients().iterator().next().setDescription("null");
+        savedRecipe.getIngredients().iterator().next().setUom(uom);
+
 
         when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
         when(recipeRepository.save(any())).thenReturn(savedRecipe);
