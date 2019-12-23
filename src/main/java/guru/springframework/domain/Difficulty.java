@@ -5,5 +5,16 @@ package guru.springframework.domain;
  */
 public enum Difficulty {
 
-    EASY, MODERATE, KIND_OF_HARD, HARD
+    EASY("Easy"), MODERATE("Modearate"), KIND_OF_HARD("Kind of hard"), HARD("Hard");
+
+    private String value;
+
+    Difficulty(final String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
 }

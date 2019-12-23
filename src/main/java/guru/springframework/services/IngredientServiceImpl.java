@@ -121,8 +121,6 @@ public class IngredientServiceImpl implements IngredientService {
                             .findFirst()
                             .ifPresentOrElse(ingredient -> {
                                 recipe.getIngredients().remove(ingredient);
-                                ingredient.setRecipe(null);
-                                ingredient.setUom(null);
                             }, () -> {
                                 log.error("Ingredient not found from recipeId=" + recipeId);
                                 throw new RuntimeException("Ingredient not found from recipeId=" + recipeId);
