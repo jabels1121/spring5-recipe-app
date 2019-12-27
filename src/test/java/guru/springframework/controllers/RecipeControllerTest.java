@@ -99,4 +99,12 @@ public class RecipeControllerTest {
 
         verify(recipeService, times(1)).deleteById(anyLong());
     }
+
+    @Test
+    public void testRecipeImageUploadFormThrowsNotFound() {
+
+        when(recipeService.findCommandById(anyLong())).thenReturn(null);
+
+
+    }
 }
