@@ -3,6 +3,7 @@ package guru.springframework.commands;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.comparator.Comparators;
 
 import java.math.BigDecimal;
 
@@ -12,16 +13,10 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IngredientCommand implements Comparable<IngredientCommand> {
-
-    private Long id;
-    private Long recipeId;
+public class IngredientCommand {
+    private String id;
+    private String recipeId;
     private String description;
     private BigDecimal amount;
     private UnitOfMeasureCommand uom;
-
-    @Override
-    public int compareTo(IngredientCommand o) {
-        return (int) (this.getId() - o.getId());
-    }
 }

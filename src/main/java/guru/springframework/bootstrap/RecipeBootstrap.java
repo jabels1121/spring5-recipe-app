@@ -48,12 +48,49 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        initUomAndCategory();
         recipeRepository.saveAll(getRecipes());
         initUsersAndRoles();
         log.debug("Loading bootstrap data");
     }
 
+    private void initUomAndCategory() {
+        categoryRepository.deleteAll();
+        unitOfMeasureRepository.deleteAll();
+
+        Category italian = new Category();
+        italian.setDescription("Italian");
+
+        var mexican = new Category();
+        mexican.setDescription("Mexican");
+
+        var fastFood = new Category();
+        fastFood.setDescription("Fast Food");
+
+        var japanese = new Category();
+        japanese.setDescription("Japanese");
+
+        var categories = categoryRepository.saveAll(Category.createCollectionOfCategoriesWithoutId("American", "Italian", "Mexican", "Fast Food", "Japanese"));
+        categories.forEach(category -> log.info("Inserted Categories = {}", category));
+
+
+        unitOfMeasureRepository.saveAll(UnitOfMeasure.createCollectionsOfUOMWithoutId("Teaspoon",
+                "Tablespoon",
+                "Cup",
+                "Pinch",
+                "Ounce",
+                "Clove",
+                "Dash",
+                "Pound",
+                "Piece",
+                "Pint",
+                "Each"));
+    }
+
     private void initUsersAndRoles() {
+        roleRepository.deleteAll();
+        userRepository.deleteAll();
+
         Role admin = new Role("ADMIN", "Роль администратора");
         Role user = new Role("USER", "Роль пользователя");
         roleRepository.saveAll(Arrays.asList(admin, user));
@@ -72,7 +109,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     private List<Recipe> getRecipes() {
-
+        recipeRepository.deleteAll();
         List<Recipe> recipes = new ArrayList<>(2);
 
         //get UOMs

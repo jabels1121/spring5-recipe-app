@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by jt on 6/21/17.
@@ -16,7 +14,7 @@ import java.util.TreeSet;
 @Setter
 @NoArgsConstructor
 public class RecipeCommand {
-    private Long id;
+    private String id;
     private String description;
     private Integer prepTime;
     private Integer cookTime;
@@ -24,8 +22,8 @@ public class RecipeCommand {
     private String source;
     private String url;
     private String directions;
-    private Set<IngredientCommand> ingredients = new TreeSet<>();
+    private List<IngredientCommand> ingredients = new ArrayList<>();
     private Difficulty difficulty;
     private NotesCommand notes;
-    private Set<CategoryCommand> categories = new HashSet<>();
+    private List<CategoryCommand> categories = new ArrayList<>();
 }

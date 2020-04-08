@@ -17,9 +17,8 @@ public class UserRestController extends AbstractRestController{
     }
 
     @GetMapping(path = "/users")
-    public List<User> getAllUsers() {
-        List<User> all = userRepository.findAll();
-        return all;
+    public Iterable<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @PostMapping(path = "/users")

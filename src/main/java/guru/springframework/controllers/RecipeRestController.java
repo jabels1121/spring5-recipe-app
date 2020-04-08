@@ -3,15 +3,12 @@ package guru.springframework.controllers;
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.entities.Recipe;
 import guru.springframework.entities.UnitOfMeasure;
-import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import guru.springframework.services.RecipeService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,12 +35,12 @@ public class RecipeRestController extends AbstractRestController {
     }
 
     @GetMapping(path = "/recipe/{id}")
-    public Recipe getRecipeById(@PathVariable Long id) {
+    public Recipe getRecipeById(@PathVariable String id) {
         return recipeService.getRecipeById(id);
     }
 
     @GetMapping(path = {"/uom"})
-    public List<UnitOfMeasure> getAllUom() {
+    public Iterable<UnitOfMeasure> getAllUom() {
         return unitOfMeasureRepository.findAll();
     }
 

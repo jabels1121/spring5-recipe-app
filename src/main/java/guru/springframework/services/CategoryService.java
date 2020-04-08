@@ -2,7 +2,6 @@ package guru.springframework.services;
 
 import guru.springframework.entities.Category;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -11,13 +10,13 @@ public interface CategoryService {
 
     Category findByDescription(String description) throws NoSuchElementException;
 
-    Category findById(Long id) throws NoSuchElementException;
+    Category findById(String id) throws NoSuchElementException;
 
     Category save(Category category);
 
-    <T extends Category> List<T> saveAll(Iterable<T> categories);
+    <T extends Category> Iterable<T> saveAll(Iterable<T> categories);
 
-    void deleteById(Long id);
+    void deleteById(String id);
 
     void deleteAll();
 

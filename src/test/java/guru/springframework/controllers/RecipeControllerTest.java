@@ -40,9 +40,9 @@ public class RecipeControllerTest {
     @Test
     public void showRecipe() throws Exception {
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
 
-        when(recipeService.getRecipeById(anyLong())).thenReturn(recipe);
+        when(recipeService.getRecipeById(anyString())).thenReturn(recipe);
 
         mockMvc.perform(get("/recipe/1/show"))
                 .andExpect(status().isOk())
@@ -61,16 +61,16 @@ public class RecipeControllerTest {
     @Test
     void updateRecipe_ShouldReturnRecipeFormWithFoundRecipeById() throws Exception {
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
         recipe.setDescription("testtest");
         recipe.setCookTime(20);
 
         RecipeCommand recipeCommand = new RecipeCommand();
-        recipeCommand.setId(1L);
+        recipeCommand.setId("1");
         recipeCommand.setDescription("testtest");
         recipeCommand.setCookTime(20);
 
-        when(recipeService.findCommandById(1L)).thenReturn(recipeCommand);
+        when(recipeService.findCommandById("1")).thenReturn(recipeCommand);
 
         mockMvc.perform(get("/recipe/1/update"))
                 .andExpect(status().isOk())
@@ -78,13 +78,13 @@ public class RecipeControllerTest {
                 .andExpect(model().attributeExists("recipe"))
                 .andExpect(model().attribute("recipe", hasProperty("description", is("testtest"))))
                 .andExpect(model().attribute("recipe", hasProperty("cookTime", is(20))))
-                .andExpect(model().attribute("recipe", hasProperty("id", is(1L))));
+                .andExpect(model().attribute("recipe", hasProperty("id", is("1"))));
     }
 
     @Test
     void saveOrUpdate() throws Exception {
         RecipeCommand recipeCommand = new RecipeCommand();
-        recipeCommand.setId(1L);
+        recipeCommand.setId("1");
         recipeCommand.setDescription("testtest");
 
         when(recipeService.saveOrUpdate(any())).thenReturn(recipeCommand);
@@ -102,6 +102,6 @@ public class RecipeControllerTest {
         mockMvc.perform(get("/recipe/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
-        verify(recipeService, times(1)).deleteById(anyLong());
+        verify(recipeService, times(1)).deleteById(anyString());
     }
 }

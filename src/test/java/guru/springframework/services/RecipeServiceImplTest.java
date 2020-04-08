@@ -44,23 +44,23 @@ public class RecipeServiceImplTest {
     @Test
     public void getRecipeByIdTest() {
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
         Optional<Recipe> recipeOptional = Optional.of(recipe);
 
-        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+        when(recipeRepository.findById(anyString())).thenReturn(recipeOptional);
 
-        Recipe recipeById = recipeServiceImpl.getRecipeById(1L);
+        Recipe recipeById = recipeServiceImpl.getRecipeById("1");
 
         assertNotNull(recipeById, "Null recipe returned");
         assertEquals(recipeById.getId(), recipe.getId());
-        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, times(1)).findById(anyString());
         verify(recipeRepository, never()).findAll();
     }
 
     @Test
     void testDeleteById() {
-        Long idToDelete = 2L;
+        String idToDelete = "2";
         recipeServiceImpl.deleteById(idToDelete);
-        verify(recipeRepository, times(1)).deleteById(anyLong());
+        verify(recipeRepository, times(1)).deleteById(anyString());
     }
 }

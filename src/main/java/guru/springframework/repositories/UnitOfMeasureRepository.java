@@ -1,11 +1,11 @@
 package guru.springframework.repositories;
 
 import guru.springframework.entities.UnitOfMeasure;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface UnitOfMeasureRepository extends JpaRepository<UnitOfMeasure, Long> {
+public interface UnitOfMeasureRepository extends CrudRepository<UnitOfMeasure, String> {
 
     Optional<UnitOfMeasure> findByDescription(String description);
 

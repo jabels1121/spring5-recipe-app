@@ -55,59 +55,59 @@ class IngredientServiceImplTest {
     @Test
     void findIngrCommandByRecipeIdAndIngredientId() {
         Recipe recipe = new Recipe();
-        recipe.setId(1L);
+        recipe.setId("1");
 
         Ingredient ingredient = new Ingredient();
-        ingredient.setId(1L);
+        ingredient.setId("1");
         ingredient.setDescription("first ingr");
 
         Ingredient ingredient1 = new Ingredient();
-        ingredient1.setId(2L);
+        ingredient1.setId("2");
         ingredient1.setDescription("second ingr");
 
         Ingredient ingredient2 = new Ingredient();
-        ingredient2.setId(3L);
+        ingredient2.setId("3");
         ingredient2.setDescription("third ingr");
 
         Arrays.asList(ingredient, ingredient1, ingredient2).forEach(recipe::addIngredient);
         Optional<Recipe> optionalRecipe = Optional.of(recipe);
         IngredientToIngredientCommand converter =
                 new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
-        when(recipeRepository.findById(anyLong())).thenReturn(optionalRecipe);
+        when(recipeRepository.findById(anyString())).thenReturn(optionalRecipe);
         when(ingredientToIngredientCommand.convert(ingredient2))
                 .thenReturn(converter.convert(ingredient2));
 
         IngredientCommand ingrCmd =
-                ingredientService.findIngrCommandByRecipeIdAndIngredientId(1L, 3L);
+                ingredientService.findIngrCommandByRecipeIdAndIngredientId("1", "3");
 
         assertNotNull(ingrCmd);
-        assertEquals(3L, (long) ingrCmd.getId());
-        assertEquals(1L, (long) ingrCmd.getRecipeId());
+        assertEquals("3", ingrCmd.getId());
+        assertEquals("1", ingrCmd.getRecipeId());
         assertEquals("third ingr", ingrCmd.getDescription());
-        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, times(1)).findById(anyString());
     }
 
     @Test
     void saveNewIngredientCommand_shouldAddNewIngredientToRecipeAndReturnSavedIngredientCommand() throws RecipeNotFoundException {
         // given
         var ingredientCommand = new IngredientCommand();
-        ingredientCommand.setId(500L);
+        ingredientCommand.setId("500");
         ingredientCommand.setAmount(BigDecimal.valueOf(3.5));
-        ingredientCommand.setRecipeId(3L);
+        ingredientCommand.setRecipeId("3");
 
         var recipeOptional = Optional.of(new Recipe());
         var recipe = new Recipe();
-        recipe.setId(3L);
+        recipe.setId("3");
         var ingredient = new Ingredient();
         recipe.addIngredient(ingredient);
-        recipe.getIngredients().iterator().next().setId(500L);
+        recipe.getIngredients().iterator().next().setId("500");
 
         IngredientCommandToIngredient converter =
                 new IngredientCommandToIngredient(new UnitOfMeasureCommandToUnitOfMeasure());
         IngredientToIngredientCommand _converter =
                 new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
 
-        when(recipeRepository.findById(3L)).thenReturn(recipeOptional);
+        when(recipeRepository.findById("3")).thenReturn(recipeOptional);
         when(recipeRepository.save(any(Recipe.class))).thenReturn(recipe);
         when(ingredientCommandToIngredient.convert(any(IngredientCommand.class)))
                 .thenReturn(converter.convert(ingredientCommand));
@@ -118,7 +118,7 @@ class IngredientServiceImplTest {
         var savedIngredientCommand = ingredientService.saveIngredientCommand(ingredientCommand);
 
         assertNotNull(savedIngredientCommand);
-        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, times(1)).findById(anyString());
         verify(recipeRepository, times(1)).save(any(Recipe.class));
         verify(ingredientCommandToIngredient, times(1)).convert(any(IngredientCommand.class));
         verify(ingredientToIngredientCommand, times(1)).convert(any(Ingredient.class));
@@ -128,31 +128,31 @@ class IngredientServiceImplTest {
     void saveIngredient_whenRecipeAlreadyHaveIngWithCorrespondingId_ShouldUpdateIngredient() throws RecipeNotFoundException {
         // given
         var ingredientCommand = new IngredientCommand();
-        ingredientCommand.setId(1L);
-        ingredientCommand.setRecipeId(3L);
+        ingredientCommand.setId("1");
+        ingredientCommand.setRecipeId("3");
         ingredientCommand.setDescription("Blabla");
         ingredientCommand.setAmount(BigDecimal.valueOf(3.5));
         var uomCommand = new UnitOfMeasureCommand();
-        uomCommand.setId(3L);
+        uomCommand.setId("3");
         uomCommand.setDescription("UomCmd description");
         ingredientCommand.setUom(uomCommand);
 
         var ingredient = new Ingredient();
-        ingredient.setId(1L);
+        ingredient.setId("1");
         var uom = new UnitOfMeasure();
-        uom.setId(3L);
+        uom.setId("3");
         uom.setDescription("Uom desciption");
         ingredient.setUom(uom);
         ingredient.setAmount(BigDecimal.valueOf(3.0));
         var recipe = new Recipe();
-        ingredient.setRecipe(recipe);
-        recipe.setId(3L);
+        //ingredient.setRecipe(recipe);
+        recipe.setId("3");
         recipe.addIngredient(ingredient);
 
-        when(recipeRepository.findById(3L)).thenReturn(Optional.of(recipe));
+        when(recipeRepository.findById("3")).thenReturn(Optional.of(recipe));
         when(recipeRepository.save(any(Recipe.class))).thenReturn(recipe);
         when(ingredientToIngredientCommand.convert(any())).thenCallRealMethod();
-        when(unitOfMeasureRepository.findById(3L)).thenReturn(Optional.of(uom));
+        when(unitOfMeasureRepository.findById("3")).thenReturn(Optional.of(uom));
         when(ingredientToIngredientCommand.convert(any())).thenReturn(ingredientCommand);
 
         //when
@@ -160,7 +160,7 @@ class IngredientServiceImplTest {
 
         // then
         assertNotNull(saveIngredientCommand);
-        Ingredient updatedIngredient = recipe.getIngredients().stream().filter(ingredient1 -> ingredient.getId().equals(1L)).findFirst().get();
+        Ingredient updatedIngredient = recipe.getIngredients().stream().filter(ingredient1 -> ingredient.getId().equals("1")).findFirst().get();
         assertEquals("Blabla", updatedIngredient.getDescription());
         assertEquals(BigDecimal.valueOf(3.5), updatedIngredient.getAmount());
     }
@@ -168,11 +168,11 @@ class IngredientServiceImplTest {
     @Test
     void saveIngredient_toNotExistingRecipe_ShouldThrowRecipeNotFound() {
         var ingredientCommand = new IngredientCommand();
-        ingredientCommand.setId(500L);
+        ingredientCommand.setId("500");
         ingredientCommand.setAmount(BigDecimal.valueOf(3.5));
-        ingredientCommand.setRecipeId(3L);
+        ingredientCommand.setRecipeId("3");
 
-        when(recipeRepository.findById(3L)).thenReturn(Optional.empty());
+        when(recipeRepository.findById("3")).thenReturn(Optional.empty());
 
         assertThrows(RecipeNotFoundException.class, () -> ingredientService.saveIngredientCommand(ingredientCommand));
     }

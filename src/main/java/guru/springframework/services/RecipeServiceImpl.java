@@ -7,12 +7,10 @@ import guru.springframework.converters.RecipeToRecipeCommand;
 import guru.springframework.entities.Recipe;
 import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -54,12 +52,12 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
-    public RecipeCommand findCommandById(Long id) {
+    public RecipeCommand findCommandById(String id) {
         return recipeToRecipeCommand.convert(getRecipeById(id));
     }
 
     @Override
-    public Recipe getRecipeById(Long id) {
+    public Recipe getRecipeById(String id) {
         Optional<Recipe> byId = recipeRepository.findById(id);
         return byId.orElseThrow();
     }
@@ -70,12 +68,12 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public <T extends Recipe> List<T> saveAll(Iterable<T> categories) {
+    public <T extends Recipe> Iterable<T> saveAll(Iterable<T> categories) {
         return recipeRepository.saveAll(categories);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         recipeRepository.deleteById(id);
     }
 

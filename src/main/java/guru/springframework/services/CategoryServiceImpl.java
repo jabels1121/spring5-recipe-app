@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category findById(Long id) throws NoSuchElementException{
+    public Category findById(String id) throws NoSuchElementException{
         Optional<Category> byId = categoryRepository.findById(id);
         return byId.orElseThrow();
     }
@@ -41,12 +41,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public <T extends Category> List<T> saveAll(Iterable<T> categories) {
+    public <T extends Category> Iterable<T> saveAll(Iterable<T> categories) {
         return categoryRepository.saveAll(categories);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         categoryRepository.deleteById(id);
     }
 

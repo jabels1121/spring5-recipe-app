@@ -6,7 +6,6 @@ import guru.springframework.entities.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -26,19 +25,19 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
     }
 
     @Override
-    public List<UnitOfMeasure> findAll() {
+    public Iterable<UnitOfMeasure> findAll() {
         return unitOfMeasureRepository.findAll();
     }
 
     @Override
-    public UnitOfMeasure findById(Long id) throws NoSuchElementException {
+    public UnitOfMeasure findById(String id) throws NoSuchElementException {
         Optional<UnitOfMeasure> byId = unitOfMeasureRepository.findById(id);
         return byId.orElseThrow();
     }
 
     @Override
     public Set<UnitOfMeasureCommand> listAllUomCommands() {
-        return findAll().stream()
+        return StreamSupport.stream(findAll().spliterator(), false)
                 .map(converter::convert).collect(Collectors.toSet());
     }
 
@@ -48,12 +47,12 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
     }
 
     @Override
-    public <T extends UnitOfMeasure> List<T> saveAll(Iterable<T> categories) {
+    public <T extends UnitOfMeasure> Iterable<T> saveAll(Iterable<T> categories) {
         return unitOfMeasureRepository.saveAll(categories);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         unitOfMeasureRepository.deleteById(id);
     }
 

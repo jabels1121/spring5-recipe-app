@@ -1,6 +1,5 @@
 package guru.springframework.services;
 
-import guru.springframework.commands.UnitOfMeasureCommand;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.entities.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
@@ -11,7 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,12 +45,12 @@ class UnitOfMeasureServiceImplTest {
         when(unitOfMeasureRepository.findAll()).thenReturn(unitOfMeasures);
 
         // when
-        List<UnitOfMeasure> all = unitOfMeasureService.findAll();
+        Iterable<UnitOfMeasure> all = unitOfMeasureService.findAll();
 
         // then
         assertAll("unitOfMeasureService.findAll() assertions", () -> {
             assertNotNull(all);
-            assertEquals(2, all.size());
+            assertEquals(2, (int) StreamSupport.stream(all.spliterator(), false).count());
             verify(unitOfMeasureRepository, times(1)).findAll();
         });
     }
@@ -54,14 +58,14 @@ class UnitOfMeasureServiceImplTest {
     @Test
     void findById_happyPath() {
         // given
-        Long id = 1L;
+        String id = "1";
         UnitOfMeasure uom = new UnitOfMeasure();
         uom.setId(id);
 
-        when(unitOfMeasureRepository.findById(1L)).thenReturn(Optional.of(uom));
+        when(unitOfMeasureRepository.findById("1")).thenReturn(Optional.of(uom));
 
         // when
-        UnitOfMeasure unitOfMeasure = unitOfMeasureService.findById(1L);
+        UnitOfMeasure unitOfMeasure = unitOfMeasureService.findById("1");
 
         // then
         assertAll("unitOfMeasureService.findById(1L) assertions", () -> {
@@ -73,21 +77,21 @@ class UnitOfMeasureServiceImplTest {
     @Test
     void findById_throwsNoSuchElementException() {
         // given
-        when(unitOfMeasureRepository.findById(1L)).thenReturn(Optional.empty());
+        when(unitOfMeasureRepository.findById("1")).thenReturn(Optional.empty());
 
         // when
         NoSuchElementException ex = assertThrows(NoSuchElementException.class, () -> {
-            unitOfMeasureService.findById(1L);
+            unitOfMeasureService.findById("1");
         }, "No value present");
     }
 
     @Test
     void listAllUomCommands() {
-        Long id = 1L;
+        String id = "1";
         UnitOfMeasure uom = new UnitOfMeasure();
         uom.setId(id);
 
-        Long id2 = 2L;
+        String id2 = "2";
         UnitOfMeasure uom1 = new UnitOfMeasure();
         uom.setId(id2);
 

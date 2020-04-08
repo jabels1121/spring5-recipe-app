@@ -1,19 +1,31 @@
 package guru.springframework.entities;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Data
-@Entity
+@NoArgsConstructor
+@Document
 public class UnitOfMeasure {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String description;
+
+    public static List<UnitOfMeasure> createCollectionsOfUOMWithoutId(String... description) {
+        return Arrays.stream(description)
+                .map(s -> {
+                    var unitOfMeasure = new UnitOfMeasure();
+                    unitOfMeasure.setDescription(s);
+                    return unitOfMeasure;
+                }).collect(Collectors.toList());
+    }
 
 }

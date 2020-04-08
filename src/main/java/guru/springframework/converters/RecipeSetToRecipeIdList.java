@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RecipeSetToRecipeIdList extends StdConverter<Set<Recipe>, List<Long>> {
+public class RecipeSetToRecipeIdList extends StdConverter<Set<Recipe>, List<String>> {
 
 
     @Override
-    public List<Long> convert(Set<Recipe> recipes) {
+    public List<String> convert(Set<Recipe> recipes) {
         return recipes.stream().map(Recipe::getId).collect(Collectors.toList());
     }
 }

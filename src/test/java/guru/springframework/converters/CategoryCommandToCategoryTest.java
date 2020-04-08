@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryCommandToCategoryTest {
 
     private static final String NEW_DESCRIPTION = "New description";
-    public static final Long ID_VAL = 1L;
+    public static final String ID_VAL = "1";
     private CategoryCommandToCategory converter = new CategoryCommandToCategory();
 
 

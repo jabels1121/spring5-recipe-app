@@ -3,7 +3,6 @@ package guru.springframework.services;
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.converters.IngredientCommandToIngredient;
 import guru.springframework.converters.IngredientToIngredientCommand;
-import guru.springframework.entities.Ingredient;
 import guru.springframework.entities.Recipe;
 import guru.springframework.exceptions.RecipeNotFoundException;
 import guru.springframework.exceptions.UnitOfMeasureNotFound;
@@ -36,7 +35,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public IngredientCommand findIngrCommandByRecipeIdAndIngredientId(Long recipeId, Long ingredientId) {
+    public IngredientCommand findIngrCommandByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
 
         Optional<Recipe> byId = recipeRepository.findById(recipeId);
 
@@ -96,6 +95,8 @@ public class IngredientServiceImpl implements IngredientService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Ingredient not found!"));
 
-        return ingredientToIngredientCommand.convert(savedIngredient);
+        var convert = ingredientToIngredientCommand.convert(savedIngredient);
+        convert.setRecipeId(recipe.getId());
+        return convert;
     }
 }

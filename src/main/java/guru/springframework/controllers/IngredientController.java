@@ -24,7 +24,7 @@ public class IngredientController {
     }
 
     @GetMapping(path = "/recipe/{id}/ingredients")
-    public String listIngredients(@PathVariable Long id, Model model) {
+    public String listIngredients(@PathVariable String id, Model model) {
         log.debug("Getting ingredient list for recipe id: " + id);
 
         RecipeCommand commandById = recipeService.findCommandById(id);
@@ -34,13 +34,35 @@ public class IngredientController {
     }
 
     @GetMapping(path = "/recipe/{recipeId}/ingredient/{ingredientId}/show")
-    public String showRecipeIngredient(@PathVariable Long recipeId,
-                                       @PathVariable Long ingredientId,
+    public String showRecipeIngredient(@PathVariable String recipeId,
+                                       @PathVariable String ingredientId,
                                        Model model) {
         IngredientCommand ingrCommandByRecipeIdAndIngredientId
                 = ingredientService.findIngrCommandByRecipeIdAndIngredientId(recipeId, ingredientId);
         model.addAttribute("ingredient", ingrCommandByRecipeIdAndIngredientId);
         return "recipe/ingredient/show";
+    }
+
+    @GetMapping(path = "/recipe/{recipeId}/ingredient/{ingredientId}/delete")
+    public String deleteRecipeIngredient(@PathVariable String recipeId,
+                                         @PathVariable String ingredientId,
+                                         Model model) {
+        var commandById = recipeService.findCommandById(recipeId);
+        commandById.getIngredients().removeIf(ingredientCommand -> ingredientCommand.getId().equalsIgnoreCase(ingredientId));
+        recipeService.saveOrUpdate(commandById);
+        model.addAttribute("recipe", commandById);
+        return "recipe/ingredient/list";
+    }
+
+    @GetMapping(path = "/recipe/{recipeId}/ingredient/{ingredientId}/update")
+    public String updateRecipeIngredient(@PathVariable String recipeId,
+                                         @PathVariable String ingredientId,
+                                         Model model) {
+        var ingr = recipeService.findCommandById(recipeId)
+                .getIngredients().stream().filter(ingredientCommand -> ingredientCommand.getId().equalsIgnoreCase(ingredientId))
+                .findFirst().orElseThrow();
+        model.addAttribute("ingredient", ingr);
+        return "recipe/ingredient/ingredientform";
     }
 
 }

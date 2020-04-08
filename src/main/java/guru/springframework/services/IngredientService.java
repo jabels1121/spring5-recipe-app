@@ -5,7 +5,7 @@ import guru.springframework.exceptions.RecipeNotFoundException;
 
 public interface IngredientService {
 
-    IngredientCommand findIngrCommandByRecipeIdAndIngredientId(Long recipeId, Long ingredientId);
+    IngredientCommand findIngrCommandByRecipeIdAndIngredientId(String recipeId, String ingredientId);
 
     IngredientCommand saveIngredientCommand(IngredientCommand command) throws RecipeNotFoundException;
 
