@@ -1,6 +1,6 @@
 package guru.springframework.security;
 
-import guru.springframework.security.dao.Role;
+import guru.springframework.security.entities.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

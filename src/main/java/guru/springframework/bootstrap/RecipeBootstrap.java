@@ -4,11 +4,15 @@ import guru.springframework.entities.*;
 import guru.springframework.repositories.CategoryRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
-import guru.springframework.security.dao.Role;
-import guru.springframework.security.dao.RoleRepository;
-import guru.springframework.security.dao.User;
-import guru.springframework.security.dao.UserRepository;
+import guru.springframework.repositories.reactive.CategoryReactiveRepository;
+import guru.springframework.repositories.reactive.RecipeReactiveRepository;
+import guru.springframework.repositories.reactive.UnitOfMeasureReactiveRepository;
+import guru.springframework.security.entities.Role;
+import guru.springframework.repositories.RoleRepository;
+import guru.springframework.security.entities.User;
+import guru.springframework.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,18 +35,28 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
+    private final UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
+    private final RecipeReactiveRepository recipeReactiveRepository;
+    private final CategoryReactiveRepository categoryReactiveRepository;
+
     public RecipeBootstrap(CategoryRepository categoryRepository,
                            RecipeRepository recipeRepository,
                            UnitOfMeasureRepository unitOfMeasureRepository,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder encoder) {
+                           PasswordEncoder encoder,
+                           UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository,
+                           RecipeReactiveRepository recipeReactiveRepository,
+                           CategoryReactiveRepository categoryReactiveRepository) {
         this.categoryRepository = categoryRepository;
         this.recipeRepository = recipeRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
+        this.unitOfMeasureReactiveRepository = unitOfMeasureReactiveRepository;
+        this.recipeReactiveRepository = recipeReactiveRepository;
+        this.categoryReactiveRepository = categoryReactiveRepository;
     }
 
     @Override

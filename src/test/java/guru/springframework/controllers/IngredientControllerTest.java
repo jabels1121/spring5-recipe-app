@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -53,9 +54,10 @@ class IngredientControllerTest {
 
     @Test
     void testShowIngredient() throws Exception {
-        IngredientCommand ingredientCommand = new IngredientCommand();
+        var ingredientCommand = Mono.just(new IngredientCommand());
 
-        when(ingredientService.findIngrCommandByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(ingredientCommand);
+        when(ingredientService.findIngrCommandByRecipeIdAndIngredientId(anyString(), anyString()))
+                .thenReturn(ingredientCommand);
 
         mockMvc.perform(get("/recipe/1/ingredient/1/show"))
                 .andExpect(status().isOk())

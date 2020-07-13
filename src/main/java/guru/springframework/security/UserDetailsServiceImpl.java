@@ -1,26 +1,36 @@
 package guru.springframework.security;
 
-import guru.springframework.security.dao.User;
-import guru.springframework.security.dao.UserRepository;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
+import guru.springframework.repositories.reactive.UserReactiveRepository;
+import guru.springframework.security.entities.User;
+import guru.springframework.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserReactiveRepository userReactiveRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository,
+                                  UserReactiveRepository userReactiveRepository) {
         this.userRepository = userRepository;
+        this.userReactiveRepository = userReactiveRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
-        final User byLogin = userRepository.findByLogin(login);
+        var user = userReactiveRepository.findByLogin(login).block();
+        if (user == null) {
+            throw new UsernameNotFoundException("User with login - " + login + " not found!");
+        }
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getLogin())
+                .password(user.getPassword())
+                .authorities(user.getRoles()).build();
+        /*final User byLogin = userRepository.findByLogin(login);
         if (byLogin == null) {
             throw new UsernameNotFoundException("User with login - " + login + " not found!");
         }
@@ -28,7 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(byLogin.getLogin())
                 .password(byLogin.getPassword())
-                .authorities(byLogin.getRoles()).build();
+                .authorities(byLogin.getRoles()).build();*/
     }
 
 }

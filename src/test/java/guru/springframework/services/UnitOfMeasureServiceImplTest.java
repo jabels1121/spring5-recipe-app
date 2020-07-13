@@ -3,12 +3,14 @@ package guru.springframework.services;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.entities.UnitOfMeasure;
 import guru.springframework.repositories.UnitOfMeasureRepository;
+import guru.springframework.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +29,9 @@ class UnitOfMeasureServiceImplTest {
     UnitOfMeasureRepository unitOfMeasureRepository;
 
     @Mock
+    UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
+
+    @Mock
     UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand;
 
     @InjectMocks
@@ -39,19 +44,19 @@ class UnitOfMeasureServiceImplTest {
     @Test
     void findAll() {
         // given
-        List<UnitOfMeasure> unitOfMeasures =
-                Arrays.asList(new UnitOfMeasure(), new UnitOfMeasure());
+        var unitOfMeasures =
+               Flux.just(new UnitOfMeasure(), new UnitOfMeasure());
 
-        when(unitOfMeasureRepository.findAll()).thenReturn(unitOfMeasures);
+        when(unitOfMeasureReactiveRepository.findAll()).thenReturn(unitOfMeasures);
 
         // when
-        Iterable<UnitOfMeasure> all = unitOfMeasureService.findAll();
+        var all = unitOfMeasureService.findAll().collectList().block();
 
         // then
         assertAll("unitOfMeasureService.findAll() assertions", () -> {
             assertNotNull(all);
             assertEquals(2, (int) StreamSupport.stream(all.spliterator(), false).count());
-            verify(unitOfMeasureRepository, times(1)).findAll();
+            verify(unitOfMeasureReactiveRepository, times(1)).findAll();
         });
     }
 
@@ -95,11 +100,11 @@ class UnitOfMeasureServiceImplTest {
         UnitOfMeasure uom1 = new UnitOfMeasure();
         uom.setId(id2);
 
-        when(unitOfMeasureRepository.findAll()).thenReturn(Arrays.asList(uom, uom1));
+        when(unitOfMeasureReactiveRepository.findAll()).thenReturn(Flux.just(uom, uom1));
         when(unitOfMeasureToUnitOfMeasureCommand.convert(any())).thenCallRealMethod();
 
         //when
-        var unitOfMeasureCommands = unitOfMeasureService.listAllUomCommands();
+        var unitOfMeasureCommands = unitOfMeasureService.listAllUomCommands().collectList().block();
 
         assertNotNull(unitOfMeasureCommands);
         assertEquals(2, unitOfMeasureCommands.size());

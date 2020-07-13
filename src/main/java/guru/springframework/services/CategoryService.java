@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 public interface CategoryService {
+
     Set<Category> getCategories();
 
     Category findByDescription(String description) throws NoSuchElementException;
@@ -21,4 +22,5 @@ public interface CategoryService {
     void deleteAll();
 
     void delete(Category category);
+
 }

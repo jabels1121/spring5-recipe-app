@@ -1,11 +1,9 @@
 package guru.springframework.controllers;
 
-import guru.springframework.security.dao.User;
-import guru.springframework.security.dao.UserRepository;
+import guru.springframework.security.entities.User;
+import guru.springframework.repositories.UserRepository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class UserRestController extends AbstractRestController{
